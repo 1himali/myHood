@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MyHood Prototype</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, sans-serif;
+      background: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    /* Phone Frame */
+    .phone {
+      width: 360px;
+      height: 640px;
+      background: #ffffff;
+      border-radius: 20px;
+      box-shadow: 0 0 30px rgba(0,0,0,0.2);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    header {
+      padding: 16px;
+      font-weight: 600;
+      border-bottom: 1px solid #ddd;
+      background: #fff;
+    }
+
+    main {
+      flex: 1;
+      padding: 16px;
+      overflow-y: auto;
+    }
+
+    .card {
+      background: #fafafa;
+      padding: 14px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      border: 1px solid #e0e0e0;
+    }
+
+    .card h3 {
+      margin: 0 0 6px 0;
+      font-size: 14px;
+    }
+
+    .card p {
+      margin: 0;
+      font-size: 13px;
+      color: #555;
+    }
+
+    /* Bottom Nav */
+    nav {
+      display: flex;
+      border-top: 1px solid #ddd;
+      background: #fff;
+    }
+
+    nav button {
+      flex: 1;
+      padding: 10px 0;
+      border: none;
+      background: none;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    nav button.active {
+      color: #007bff;
+      font-weight: 600;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    /* User Type Selection & Onboarding - inside phone frame */
+    .user-type-screen,
+    .onboarding-screen,
+    .app-container {
+      display: none;
+      flex-direction: column;
+      flex: 1;
+      padding: 16px;
+      overflow-y: auto;
+    }
+
+    .user-type-screen.visible,
+    .onboarding-screen.visible,
+    .app-container.visible {
+      display: flex;
+    }
+
+    .user-type-screen h1,
+    .onboarding-screen h1 {
+      margin: 0 0 8px 0;
+      font-size: 22px;
+      color: #333;
+      text-align: center;
+    }
+
+    .user-type-screen p,
+    .onboarding-screen p {
+      margin: 0 0 24px 0;
+      font-size: 14px;
+      color: #666;
+      text-align: center;
+    }
+
+    .user-type-option,
+    .onboarding-btn {
+      width: 100%;
+      padding: 20px 24px;
+      margin-bottom: 12px;
+      background: #fafafa;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .user-type-option:hover,
+    .onboarding-btn:hover {
+      border-color: #007bff;
+      box-shadow: 0 2px 8px rgba(0,123,255,0.15);
+    }
+
+    .onboarding-step {
+      margin-bottom: 24px;
+    }
+
+    .coming-soon-msg {
+      text-align: center;
+      padding: 24px;
+      color: #666;
+      font-size: 16px;
+    }
+
+    .sign-out-btn {
+      margin-top: 16px;
+      padding: 12px 20px;
+      background: #fff;
+      border: 2px solid #dc3545;
+      color: #dc3545;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .sign-out-btn:hover {
+      background: #dc3545;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Single phone frame - same rectangle for all screens -->
+<div class="phone">
+  <header id="header">MyHood</header>
+
+  <!-- User Type Selection (Landing) -->
+  <div id="user-type-screen" class="user-type-screen visible">
+    <h1>Welcome to MyHood</h1>
+    <p>Who are you?</p>
+    <button class="user-type-option" onclick="navigateTo('/onboarding/resident')">Resident</button>
+    <button class="user-type-option" onclick="navigateTo('/onboarding/landlord')">Landlord / RWA</button>
+    <button class="user-type-option" onclick="navigateTo('/onboarding/security')">Security (at gate)</button>
+  </div>
+
+  <!-- Onboarding screens (one per profile) -->
+  <div id="onboarding-resident" class="onboarding-screen">
+    <div class="onboarding-step">
+      <h1>Resident Onboarding</h1>
+      <p>Stay on top of visitors, parcels, and dues for your home.</p>
+      <button class="onboarding-btn" onclick="navigateTo('/resident/home')">Continue</button>
+    </div>
+  </div>
+
+  <div id="onboarding-landlord" class="onboarding-screen">
+    <div class="onboarding-step">
+      <h1>Landlord / RWA</h1>
+      <p>Manage your society with ease.</p>
+      <p class="coming-soon-msg">Coming soon</p>
+      <button class="onboarding-btn" onclick="navigateTo('/')">Back</button>
+    </div>
+  </div>
+
+  <div id="onboarding-security" class="onboarding-screen">
+    <div class="onboarding-step">
+      <h1>Security (at gate)</h1>
+      <p>Manage visitor entries and parcels at the gate.</p>
+      <p class="coming-soon-msg">Coming soon</p>
+      <button class="onboarding-btn" onclick="navigateTo('/')">Back</button>
+    </div>
+  </div>
+
+  <!-- Resident App -->
+  <div id="app-container" class="app-container">
+  <main>
+    <!-- HOME -->
+    <section id="home">
+      <div class="card">
+        <h3>Visitor Status</h3>
+        <p>No visitors waiting</p>
+      </div>
+      <div class="card">
+        <h3>Parcels</h3>
+        <p>1 parcel pending at gate</p>
+      </div>
+      <div class="card">
+        <h3>Dues</h3>
+        <p>Maintenance due in 3 days</p>
+      </div>
+    </section>
+
+    <!-- VISITORS -->
+    <section id="visitors" class="hidden">
+      <div class="card">
+        <h3>Delivery Partner</h3>
+        <p>Approve or reject entry</p>
+      </div>
+      <div class="card">
+        <h3>Unplanned Visitor</h3>
+        <p>Photo taken by guard</p>
+      </div>
+    </section>
+
+    <!-- PARCELS -->
+    <section id="parcels" class="hidden">
+      <div class="card">
+        <h3>Amazon Parcel</h3>
+        <p>OTP shared with guard</p>
+      </div>
+    </section>
+
+    <!-- DUES -->
+    <section id="dues" class="hidden">
+      <div class="card">
+        <h3>Maintenance</h3>
+        <p>Status: Due</p>
+      </div>
+      <div class="card">
+        <h3>Festival Contribution</h3>
+        <p>Status: Paid</p>
+      </div>
+    </section>
+
+    <!-- PROFILE -->
+    <section id="profile" class="hidden">
+      <div class="card">
+        <h3>Name</h3>
+        <p>Verified Tenant</p>
+      </div>
+      <div class="card">
+        <h3>Vehicle</h3>
+        <p>KA 01 AB 1234</p>
+      </div>
+      <div class="card">
+        <h3>Parking</h3>
+        <p>Slot B-12</p>
+      </div>
+      <button class="sign-out-btn" onclick="signOut()">Sign out</button>
+    </section>
+  </main>
+
+  <nav>
+    <button data-tab="home" class="active">Home</button>
+    <button data-tab="visitors">Visitors</button>
+    <button data-tab="parcels">Parcels</button>
+    <button data-tab="dues">Dues</button>
+    <button data-tab="profile">Profile</button>
+  </nav>
+</div>
+</div>
+
+<script>
+  // Hash-based routing for browser Back/Forward
+  const routes = {
+    '/': 'landing',
+    '/onboarding/resident': 'onboarding-resident',
+    '/onboarding/landlord': 'onboarding-landlord',
+    '/onboarding/security': 'onboarding-security',
+    '/resident/home': 'resident-home',
+    '/resident/visitors': 'resident-visitors',
+    '/resident/parcels': 'resident-parcels',
+    '/resident/dues': 'resident-dues',
+    '/resident/profile': 'resident-profile'
+  };
+
+  function getHash() {
+    const hash = window.location.hash.slice(1) || '/';
+    return hash.endsWith('/') && hash !== '/' ? hash.slice(0, -1) : hash;
+  }
+
+  function navigateTo(path) {
+    window.location.hash = path;
+    render(path);
+  }
+
+  function render(path) {
+    const hash = path || getHash();
+    const screenId = routes[hash];
+
+    document.querySelectorAll('.user-type-screen, .onboarding-screen, .app-container').forEach(el => {
+      el.classList.remove('visible');
+    });
+
+    if (screenId === 'landing') {
+      document.getElementById('user-type-screen').classList.add('visible');
+      document.getElementById('header').innerText = 'MyHood';
+    } else if (screenId && screenId.startsWith('onboarding-')) {
+      document.getElementById(screenId).classList.add('visible');
+      document.getElementById('header').innerText = 'MyHood';
+    } else if (screenId && screenId.startsWith('resident-')) {
+      document.getElementById('app-container').classList.add('visible');
+      const tab = screenId.replace('resident-', '');
+      showTab(tab, document.querySelector(`nav button[data-tab="${tab}"]`));
+    }
+  }
+
+  function showTab(tabId, button) {
+    document.querySelectorAll('main section').forEach(sec => sec.classList.add('hidden'));
+    const section = document.getElementById(tabId);
+    if (section) section.classList.remove('hidden');
+
+    document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('active'));
+    if (button) button.classList.add('active');
+
+    document.getElementById('header').innerText = tabId.charAt(0).toUpperCase() + tabId.slice(1);
+  }
+
+  function signOut() {
+    navigateTo('/');
+  }
+
+  window.addEventListener('hashchange', () => render());
+  window.addEventListener('load', () => {
+    const hash = getHash();
+    if (!routes[hash]) window.location.hash = '/';
+    render();
+  });
+
+  window.addEventListener('popstate', () => render());
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('nav button[data-tab]').forEach(btn => {
+      btn.onclick = () => navigateTo('/resident/' + btn.dataset.tab);
+    });
+  });
+</script>
+
+</body>
+</html>
